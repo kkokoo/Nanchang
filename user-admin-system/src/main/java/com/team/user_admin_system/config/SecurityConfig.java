@@ -7,24 +7,43 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+/**
+ * Spring Security 安全配置类
+ * 功能：密码加密、跨站请求伪造关闭、请求权限放行
+ * 用于支持用户登录注册的密码加密，同时不拦截前端请求
+ */
 @Configuration
-@EnableWebSecurity
+@EnableWebSecurity // 开启Spring Security安全认证功能
 public class SecurityConfig {
 
-    // 密码加密器（核心功能不变，还是BCrypt）
+    /**
+     * 密码加密工具 Bean
+     * 使用 BCrypt 强哈希算法，自动加盐，每次加密结果不同
+     * 用于：用户注册加密、登录密码比对
+     */
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    // 新版本用 SecurityFilterChain 配置放行规则，替代 WebSecurityConfigurerAdapter
+    /**
+     * Spring Security 新版核心配置
+     * 替代旧版 WebSecurityConfigurerAdapter（已废弃）
+     */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable()) // 关闭CSRF，方便前后端联调
+            // 关闭CSRF防护（前后端分离项目必须关闭，否则接口无法访问）
+            .csrf(csrf -> csrf.disable())
+            
+            // 配置请求授权规则
             .authorizeHttpRequests(auth -> auth
-                .anyRequest().permitAll() // 所有请求放行，不拦截
+                // 所有请求全部放行，不做登录拦截
+                // 适合开发阶段，后续可根据需要添加权限控制
+                .anyRequest().permitAll()
             );
+        
+        // 构建并返回安全配置
         return http.build();
     }
 }
