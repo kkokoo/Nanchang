@@ -1,7 +1,11 @@
 package com.team.user_admin_system.module.controller;
 
 import com.team.user_admin_system.module.entity.Person;
+import com.team.user_admin_system.module.entity.Event;
+import com.team.user_admin_system.module.entity.EventPerson;
 import com.team.user_admin_system.module.service.PersonService;
+import com.team.user_admin_system.module.repository.EventPersonRepository;
+import com.team.user_admin_system.module.repository.EventRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -9,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/person")
@@ -16,6 +21,12 @@ public class PersonController {
 
     @Autowired
     private PersonService personService;
+
+    @Autowired
+    private EventPersonRepository eventPersonRepository;
+
+    @Autowired
+    private EventRepository eventRepository;
 
     @GetMapping("/list")
     public List<Person> getPersons(
@@ -57,4 +68,43 @@ public class PersonController {
         }).collect(Collectors.toList());
     }
 
+    /**
+     * 根据人物名称查找人物ID
+     * 地址：GET /api/person/findByName?name=xxx
+     */
+    @GetMapping("/findByName")
+    public ResponseEntity<Map<String, Object>> findByName(@RequestParam String name) {
+        List<Person> persons = personService.searchByName(name);
+        if (!persons.isEmpty()) {
+            Person p = persons.get(0);
+            Map<String, Object> result = new HashMap<>();
+            result.put("personId", p.getPersonId());
+            result.put("name", p.getName());
+            return ResponseEntity.ok(result);
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    /**
+     * 获取人物的相关事件
+     * 地址：GET /api/person/{id}/related-events
+     */
+    @GetMapping("/{id}/related-events")
+    public List<Map<String, Object>> getRelatedEvents(@PathVariable Long id) {
+        List<EventPerson> relations = eventPersonRepository.findByPersonId(id.intValue());
+        return relations.stream().map(ep -> {
+            Optional<Event> eventOpt = eventRepository.findById(ep.getEventId().longValue());
+            Map<String, Object> map = new HashMap<>();
+            if (eventOpt.isPresent()) {
+                Event e = eventOpt.get();
+                map.put("eventId", e.getEventId());
+                map.put("eventName", e.getEventName());
+                map.put("dynasty", e.getDynasty());
+                map.put("occurTime", e.getOccurTime());
+            }
+            return map;
+        }).filter(m -> !m.isEmpty()).collect(Collectors.toList());
+    }
+
 }
+

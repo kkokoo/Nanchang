@@ -1,5 +1,6 @@
 package com.team.user_admin_system.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -21,6 +22,7 @@ public class SysUser {
     // nullable=false：用户名不能为空
     private String username; // 用户名（登录账号）
 
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password; // 密码（BCrypt加密后）
 
     private String phone; // 手机号（可选）

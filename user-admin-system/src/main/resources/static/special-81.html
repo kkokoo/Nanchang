@@ -258,27 +258,27 @@ src="/images/history/南昌民国日报.jpg"/>
 <div class="py-12 border-t mt-16">
 <h4 class="text-center font-bold text-xl mb-10">起义核心领导集体</h4>
 <div class="grid grid-cols-2 md:grid-cols-5 gap-6">
-<div class="text-center">
+<div class="text-center cursor-pointer" onclick="goToFigure('周恩来')">
 <img alt="周恩来" class="w-24 h-24 rounded-full mx-auto grayscale hover:grayscale-0 cursor-pointer border-2 border-transparent hover:border-red-600 transition"
 src="/images/role/周恩来.jpg"/>
 <p class="text-sm font-bold mt-3">周恩来</p>
 </div>
-<div class="text-center">
+<div class="text-center cursor-pointer" onclick="goToFigure('贺龙')">
 <img alt="贺龙" class="w-24 h-24 rounded-full mx-auto grayscale hover:grayscale-0 cursor-pointer border-2 border-transparent hover:border-red-600 transition"
 src="/images/role/贺龙.jpg"/>
 <p class="text-sm font-bold mt-3">贺龙</p>
 </div>
-<div class="text-center">
+<div class="text-center cursor-pointer" onclick="goToFigure('叶挺')">
 <img alt="叶挺" class="w-24 h-24 rounded-full mx-auto grayscale hover:grayscale-0 cursor-pointer border-2 border-transparent hover:border-red-600 transition"
 src="/images/role/叶挺.jpg"/>
 <p class="text-sm font-bold mt-3">叶挺</p>
 </div>
-<div class="text-center">
+<div class="text-center cursor-pointer" onclick="goToFigure('朱德')">
 <img alt="朱德" class="w-24 h-24 rounded-full mx-auto grayscale hover:grayscale-0 cursor-pointer border-2 border-transparent hover:border-red-600 transition"
 src="/images/role/朱德.jpg"/>
 <p class="text-sm font-bold mt-3">朱德</p>
 </div>
-<div class="text-center">
+<div class="text-center cursor-pointer" onclick="goToFigure('刘伯承')">
 <img alt="刘伯承" class="w-24 h-24 rounded-full mx-auto grayscale hover:grayscale-0 cursor-pointer border-2 border-transparent hover:border-red-600 transition"
 src="/images/role/刘伯承.jpg"/>
 <p class="text-sm font-bold mt-3">刘伯承</p>
@@ -293,6 +293,38 @@ src="/images/role/刘伯承.jpg"/>
 </footer>
 
 <script>
+// 点击人物头像跳转到figure-detail页面
+function goToFigure(name) {
+    $.ajax({
+        url: '/api/person/findByName?name=' + encodeURIComponent(name),
+        type: 'GET',
+        success: function(data) {
+            if (data && data.personId) {
+                window.location.href = 'figure-detail.html?id=' + data.personId;
+            } else {
+                alert('未找到人物：' + name);
+            }
+        },
+        error: function() {
+            // 如果接口失败，尝试使用列表接口查找
+            $.ajax({
+                url: '/api/person/list?name=' + encodeURIComponent(name),
+                type: 'GET',
+                success: function(list) {
+                    if (list && list.length > 0) {
+                        window.location.href = 'figure-detail.html?id=' + list[0].personId;
+                    } else {
+                        alert('未找到人物：' + name);
+                    }
+                },
+                error: function() {
+                    alert('查询失败，请稍后重试');
+                }
+            });
+        }
+    });
+}
+
 $(document).ready(function() {
     const navLinks = $('#sectionNav a');
     const sections = $('section');

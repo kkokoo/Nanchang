@@ -61,8 +61,8 @@
                                     <p class="text-red-700 font-bold mt-2 text-lg">${p.relatedEvent || p.dynasty}</p>
                                 </div>
                                 <div class="flex space-x-3 mt-4">
-                                    <button onclick="handleFavorite()" class="px-6 py-2 bg-red-700 text-white rounded-md font-bold shadow hover:bg-red-800 transition flex items-center">
-                                        <span class="iconify mr-2" data-icon="ri:star-fill"></span> 收藏档案
+                                    <button onclick="handleFavorite(${p.personId}, '${p.name}')" id="collectBtn" class="px-6 py-2 bg-red-700 text-white rounded-md font-bold shadow hover:bg-red-800 transition flex items-center">
+                                        <span class="iconify mr-2" data-icon="ri:star-line"></span> 收藏档案
                                     </button>
                                 </div>
                             </div>
@@ -78,6 +78,16 @@
                                         <h2 class="text-2xl font-bold border-b-2 border-red-700 pb-2 mb-4 inline-block">主要贡献 / 事迹</h2>
                                         <p class="text-gray-700 leading-relaxed text-justify indent-8 whitespace-pre-line">${p.contribution}</p>
                                     </section>` : ''}
+
+                                    <!-- 相关事件区域 -->
+                                    <section id="relatedEventsSection" class="hidden">
+                                        <h2 class="text-2xl font-bold border-b-2 border-red-700 pb-2 mb-4 inline-block flex items-center">
+                                            <span class="iconify text-red-600 mr-2" data-icon="ri:calendar-event-line"></span>
+                                            相关事件
+                                        </h2>
+                                        <div id="relatedEventsList" class="space-y-3">
+                                        </div>
+                                    </section>
                                 </div>
                                 <div class="col-span-1 space-y-6">
                                     <div class="bg-gray-50 p-6 rounded-lg border border-gray-100">
@@ -105,6 +115,12 @@
                     </div>
                     `;
                     $('#detailContainer').html(html);
+
+                    // 加载相关事件
+                    loadRelatedEvents(personId);
+
+                    // 检查收藏状态
+                    checkCollectStatus(personId, 'person');
                 },
                 error: function () {
                     $('#detailContainer').html(`
@@ -117,16 +133,87 @@
             });
         });
 
-        function handleFavorite() {
-            // 简单判断是否登录（例如通过localStorage或者sessionStorage检查）
-            // 如果项目中没有明确的token标志，按照要求直接跳转或提示
-            let isLoggedIn = localStorage.getItem('userToken') || sessionStorage.getItem('user');
-            if (!isLoggedIn) {
+        // 加载相关事件
+        function loadRelatedEvents(personId) {
+            $.ajax({
+                url: '/api/person/' + personId + '/related-events',
+                type: 'GET',
+                success: function(events) {
+                    if (events && events.length > 0) {
+                        let html = '';
+                        events.forEach(function(e) {
+                            html += `
+                                <a href="event-detail.html?id=${e.eventId}" 
+                                   class="flex items-center justify-between p-4 border rounded-lg hover:bg-red-50 hover:border-red-300 transition group">
+                                    <div class="flex items-center space-x-3">
+                                        <span class="iconify text-red-600 text-xl" data-icon="ri:calendar-event-fill"></span>
+                                        <div>
+                                            <p class="font-bold text-gray-800 group-hover:text-red-700 transition">${e.eventName}</p>
+                                            <p class="text-xs text-gray-500">${e.dynasty || ''} · ${e.occurTime || ''}</p>
+                                        </div>
+                                    </div>
+                                    <span class="iconify text-gray-400 group-hover:text-red-600 transition" data-icon="ri:arrow-right-s-line"></span>
+                                </a>
+                            `;
+                        });
+                        $('#relatedEventsList').html(html);
+                        $('#relatedEventsSection').removeClass('hidden');
+                    }
+                }
+            });
+        }
+
+        // 收藏人物
+        function handleFavorite(personId, personName) {
+            const userStr = localStorage.getItem('currentUser');
+            if (!userStr) {
                 alert('请先登录后收藏！');
                 window.location.href = 'admin-login.html';
-            } else {
-                alert('收藏成功！');
+                return;
             }
+            const user = JSON.parse(userStr);
+
+            $.ajax({
+                url: '/api/collect/add',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    userId: user.userId,
+                    contentType: 'person',
+                    contentId: personId,
+                    folderName: '默认收藏夹'
+                }),
+                success: function(res) {
+                    if (res.code === 1) {
+                        alert('收藏成功！');
+                        $('#collectBtn').html('<span class="iconify mr-2" data-icon="ri:star-fill"></span> 已收藏');
+                        $('#collectBtn').removeClass('bg-red-700 hover:bg-red-800').addClass('bg-gray-500');
+                    } else {
+                        alert(res.msg || '收藏失败');
+                    }
+                },
+                error: function() {
+                    alert('收藏失败，请稍后重试');
+                }
+            });
+        }
+
+        // 检查收藏状态
+        function checkCollectStatus(contentId, contentType) {
+            const userStr = localStorage.getItem('currentUser');
+            if (!userStr) return;
+            const user = JSON.parse(userStr);
+
+            $.ajax({
+                url: '/api/collect/check?userId=' + user.userId + '&contentType=' + contentType + '&contentId=' + contentId,
+                type: 'GET',
+                success: function(res) {
+                    if (res.code === 1 && res.data === true) {
+                        $('#collectBtn').html('<span class="iconify mr-2" data-icon="ri:star-fill"></span> 已收藏');
+                        $('#collectBtn').removeClass('bg-red-700 hover:bg-red-800').addClass('bg-gray-500');
+                    }
+                }
+            });
         }
     </script>
 </body>

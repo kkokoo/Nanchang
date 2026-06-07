@@ -1,7 +1,11 @@
 package com.team.user_admin_system.module.controller;
 
 import com.team.user_admin_system.module.entity.Event;
+import com.team.user_admin_system.module.entity.EventPerson;
+import com.team.user_admin_system.module.entity.Person;
 import com.team.user_admin_system.module.repository.EventRepository;
+import com.team.user_admin_system.module.repository.EventPersonRepository;
+import com.team.user_admin_system.module.repository.PersonRepository;
 import com.team.user_admin_system.module.service.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +26,12 @@ public class EventController {
 
     @Autowired
     private EventRepository eventRepository;
+
+    @Autowired
+    private EventPersonRepository eventPersonRepository;
+
+    @Autowired
+    private PersonRepository personRepository;
 
     // 事件列表接口：GET /api/event/list
     @GetMapping("/list")
@@ -57,5 +67,26 @@ public class EventController {
             map.put("dynasty", event.getDynasty()); // 所属朝代
             return map;
         }).collect(Collectors.toList());
+    }
+
+    /**
+     * 获取事件的相关人物
+     * 地址：GET /api/event/{id}/related-persons
+     */
+    @GetMapping("/{id}/related-persons")
+    public List<Map<String, Object>> getRelatedPersons(@PathVariable Long id) {
+        List<EventPerson> relations = eventPersonRepository.findByEventId(id.intValue());
+        return relations.stream().map(ep -> {
+            Optional<Person> personOpt = personRepository.findById(ep.getPersonId().longValue());
+            Map<String, Object> map = new HashMap<>();
+            if (personOpt.isPresent()) {
+                Person p = personOpt.get();
+                map.put("personId", p.getPersonId());
+                map.put("name", p.getName());
+                map.put("dynasty", p.getDynasty());
+                map.put("cover", p.getCover());
+            }
+            return map;
+        }).filter(m -> !m.isEmpty()).collect(Collectors.toList());
     }
 }

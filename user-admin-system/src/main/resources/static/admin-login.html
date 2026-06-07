@@ -41,17 +41,6 @@
                     <input id="password" class="w-full bg-white/70 border border-gray-300 rounded-lg px-4 py-3 text-lg focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent" placeholder="输入密码" type="password" />
                 </div>
 
-                <!-- ====================== 登录身份选择 ====================== -->
-                <div class="flex gap-3">
-                    <label class="flex items-center text-gray-800 font-bold">
-                        <input type="radio" name="role" value="user" checked class="mr-2">
-                        <span>普通用户</span>
-                    </label>
-                    <label class="flex items-center text-gray-800 font-bold">
-                        <input type="radio" name="role" value="admin" class="mr-2">
-                        <span>管理员</span>
-                    </label>
-                </div>
 
                 <div class="flex items-center justify-between text-base">
                     <label class="flex items-center text-gray-800">
@@ -89,18 +78,17 @@
         }
         updateDate();
 
-        // ====================== 智能登录：用户 / 管理员 二合一 ======================
+        // ====================== 统一登录：根据user_id自动分流 ======================
         function login() {
             let username = document.getElementById("username").value;
             let password = document.getElementById("password").value;
-            let role = document.querySelector('input[name="role"]:checked').value;
 
-            // 自动选择接口
-            let url = role === "admin"
-                ? "http://localhost:8080/admin/login"
-                : "http://localhost:8080/user/login";
+            if (!username || !password) {
+                alert("请输入账号和密码");
+                return;
+            }
 
-            fetch(url, {
+            fetch("http://localhost:8080/user/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ username, password })
@@ -108,8 +96,18 @@
             .then(res => res.json())
             .then(data => {
                 if (data.code === 1) {
-                    alert(role === "admin" ? "管理员登录成功！" : "用户登录成功！");
-                    window.location.href = "admin-dashboard.html";
+                    // 登录成功，保存用户信息到 localStorage
+                    const user = data.data;
+                    localStorage.setItem('currentUser', JSON.stringify(user));
+
+                    // 根据 user_id 分流：user_id=1 为管理员，其他为普通用户
+                    if (user.userId === 1) {
+                        alert("管理员登录成功！");
+                        window.location.href = "admin-dashboard.html";
+                    } else {
+                        alert("登录成功！");
+                        window.location.href = "profile.html";
+                    }
                 } else {
                     alert("登录失败：" + data.msg);
                 }

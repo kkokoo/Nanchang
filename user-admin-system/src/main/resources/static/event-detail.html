@@ -85,7 +85,7 @@
                 success: function (e) {
                     const imgUrl = imageMap[e.eventName] || "/images/history/暂无图片.jpg";
                     
-                    const html = `
+                    let html = `
                         <div class="bg-white rounded-xl shadow-md p-8">
                             <h1 class="text-3xl font-bold text-center red-accent mb-4">${e.eventName}</h1>
                             <div class="flex justify-center mb-6">
@@ -105,12 +105,33 @@
                                 <h3 class="text-xl font-bold mb-2">历史意义</h3>
                                 <p>${e.significance}</p>
                             </div>
-                            <div class="mt-8 text-center">
+
+                            <!-- 相关人物区域 -->
+                            <div id="relatedPersonsSection" class="mt-8 border-t pt-6 hidden">
+                                <h3 class="text-xl font-bold mb-4 flex items-center">
+                                    <span class="iconify text-red-600 mr-2" data-icon="ri:group-line"></span>
+                                    相关人物
+                                </h3>
+                                <div id="relatedPersonsList" class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                </div>
+                            </div>
+
+                            <div class="mt-8 flex justify-center space-x-4">
                                 <a href="events.html" class="inline-block bg-gray-200 px-6 py-2 rounded hover:bg-gray-300 transition">返回列表</a>
+                                <button onclick="handleCollectEvent(${e.eventId}, '${e.eventName}')" id="collectBtn" 
+                                    class="inline-block bg-red-600 text-white px-6 py-2 rounded hover:bg-red-700 transition flex items-center">
+                                    <span class="iconify mr-1" data-icon="ri:star-line"></span> 收藏事件
+                                </button>
                             </div>
                         </div>
                     `;
                     $('#detailContainer').html(html);
+
+                    // 加载相关人物
+                    loadRelatedPersons(eventId);
+
+                    // 检查收藏状态
+                    checkCollectStatus(eventId, 'event');
                 },
                 error: function () {
                     $('#detailContainer').html(`
@@ -122,6 +143,86 @@
                 }
             });
         });
+
+        // 加载相关人物
+        function loadRelatedPersons(eventId) {
+            $.ajax({
+                url: '/api/event/' + eventId + '/related-persons',
+                type: 'GET',
+                success: function(persons) {
+                    if (persons && persons.length > 0) {
+                        let html = '';
+                        persons.forEach(function(p) {
+                            let cover = p.cover || 'https://via.placeholder.com/100x100?text=' + encodeURIComponent(p.name);
+                            html += `
+                                <a href="figure-detail.html?id=${p.personId}" class="flex items-center space-x-3 p-3 border rounded-lg hover:bg-red-50 hover:border-red-300 transition group">
+                                    <img src="${cover}" alt="${p.name}" class="w-12 h-12 rounded-full object-cover border-2 border-gray-200 group-hover:border-red-400 transition"/>
+                                    <div>
+                                        <p class="font-bold text-gray-800 group-hover:text-red-700 transition">${p.name}</p>
+                                        <p class="text-xs text-gray-500">${p.dynasty || ''}</p>
+                                    </div>
+                                </a>
+                            `;
+                        });
+                        $('#relatedPersonsList').html(html);
+                        $('#relatedPersonsSection').removeClass('hidden');
+                    }
+                }
+            });
+        }
+
+        // 收藏事件
+        function handleCollectEvent(eventId, eventName) {
+            const userStr = localStorage.getItem('currentUser');
+            if (!userStr) {
+                alert('请先登录后收藏！');
+                window.location.href = 'admin-login.html';
+                return;
+            }
+            const user = JSON.parse(userStr);
+
+            $.ajax({
+                url: '/api/collect/add',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    userId: user.userId,
+                    contentType: 'event',
+                    contentId: eventId,
+                    folderName: '默认收藏夹'
+                }),
+                success: function(res) {
+                    if (res.code === 1) {
+                        alert('收藏成功！');
+                        $('#collectBtn').html('<span class="iconify mr-1" data-icon="ri:star-fill"></span> 已收藏');
+                        $('#collectBtn').removeClass('bg-red-600 hover:bg-red-700').addClass('bg-gray-500');
+                    } else {
+                        alert(res.msg || '收藏失败');
+                    }
+                },
+                error: function() {
+                    alert('收藏失败，请稍后重试');
+                }
+            });
+        }
+
+        // 检查收藏状态
+        function checkCollectStatus(contentId, contentType) {
+            const userStr = localStorage.getItem('currentUser');
+            if (!userStr) return;
+            const user = JSON.parse(userStr);
+
+            $.ajax({
+                url: '/api/collect/check?userId=' + user.userId + '&contentType=' + contentType + '&contentId=' + contentId,
+                type: 'GET',
+                success: function(res) {
+                    if (res.code === 1 && res.data === true) {
+                        $('#collectBtn').html('<span class="iconify mr-1" data-icon="ri:star-fill"></span> 已收藏');
+                        $('#collectBtn').removeClass('bg-red-600 hover:bg-red-700').addClass('bg-gray-500');
+                    }
+                }
+            });
+        }
     </script>
 </body>
 </html>
