@@ -1,12 +1,15 @@
+
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>南昌历史云志 - 历史事件</title>
+    <!-- 新增：引入loading样式 -->
+    <link rel="stylesheet" href="/css/loading.css">
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://code.iconify.design/3/3.1.1/iconify.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://code.iconify.design/3/3.1.1/iconify.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="/js/common.js"></script>
     <style>
         .red-accent { color: #C53030; }
@@ -39,6 +42,7 @@
                 <a class="hover:text-red-600" href="timeline.html">历史长河</a>
                 <a class="hover:text-red-600" href="faq.html">用户留言</a>
                 <a class="hover:text-red-600" href="quiz.html">互动答题</a>
+                <a class="hover:text-red-600" href="game.html">互动游戏</a>
                 <a class="hover:text-red-600" href="about.html">关于我们</a>
                 <a class="hover:text-red-600" href="/profile.html">我的</a>
             </div>
@@ -77,7 +81,9 @@
 
     <script>
         $(document).ready(function () {
-            // ====================== 已全部改成本地图片路径 ======================
+            // 页面进入动画
+            pageReady();
+
             const imageMap = {
                 "灌婴筑城": "/images/history/灌婴筑城.jpg",
                 "许逊治水": "/images/history/许逊治水.jpg",
@@ -105,42 +111,67 @@
                 loadEvent($(this).text());
             });
 
-            function loadEvent(dynasty = "全部时期") {
-                $('#eventList').html('<div class="empty-state">加载中...</div>');
+                           function loadEvent(dynasty) {
+                if (dynasty === undefined) dynasty = "全部时期";
+                // 先显示骨架屏
+                $('#eventList').html(skeletonCard(4));
+
+                // 缓存 key
+                var cacheKey = '/api/event/list?dynasty=' + dynasty;
+
+                // 尝试从缓存读取
+                var cached = AppCache.get(cacheKey);
+                if (cached) {
+                    renderEvents(cached);
+                    return;
+                }
+
+                // GET 请求：把 dynasty 作为 URL 查询参数
                 $.ajax({
-                    url: "/api/event/list",
-                    type: "GET",
+                    url: '/api/event/list',
+                    method: 'GET',
                     data: { dynasty: dynasty },
+                    timeout: 10000,
                     success: function (list) {
-                        let html = "";
-                        list.forEach(e => {
-                            const imgUrl = imageMap[e.eventName] || "/images/history/暂无图片.jpg";
-                            const content = e.process ? e.process.substring(0, 100) + '...' : '暂无简介';
-                            html += `
-                                <div class="event-item bg-white rounded-xl shadow-md p-6 flex gap-6">
-                                    <img src="${imgUrl}" alt="${e.eventName}" class="w-48 h-32 object-cover rounded-lg flex-shrink-0">
-                                    <div class="flex-1">
-                                        <h3 class="text-xl font-bold text-gray-800 mb-2">${e.eventName || '无标题'}</h3>
-                                        <div class="flex gap-4 text-sm text-gray-600 mb-3">
-                                            <span>时间：${e.occurTime || '未知时间'}</span>
-                                            <span>朝代：${e.dynasty || '未知朝代'}</span>
-                                        </div>
-                                        <p class="text-gray-700 mb-4">${content}</p>
-                                        <a href="event-detail.html?id=${e.eventId}" class="inline-block bg-red-accent text-white px-6 py-2 rounded hover:bg-red-700 transition">查看详情</a>
-                                    </div>
-                                </div>
-                            `;
-                        });
-                        $('#eventList').html(html || '<div class="empty-state">暂无事件</div>');
+                        AppCache.set(cacheKey, list);
+                        renderEvents(list);
                     },
                     error: function () {
-                        $('#eventList').html('<div class="text-center py-12 text-red-500">加载失败</div>');
+                        $('#eventList').html(
+                            '<div class="text-center py-16 bg-white rounded-xl shadow-md">' +
+                            '<span class="iconify text-5xl text-gray-400" data-icon="ri:wifi-off-line"></span>' +
+                            '<p class="text-gray-500 mt-4 mb-6">网络加载失败，请检查网络后重试</p>' +
+                            '<button onclick="location.reload()" class="bg-red-accent text-white px-6 py-2 rounded hover:bg-red-700 transition">重新加载</button>' +
+                            '</div>'
+                        );
                     }
                 });
             }
 
-            loadEvent();
-        });
+            function renderEvents(list) {
+                let html = "";
+                list.forEach(function (e) {
+                    const imgUrl = imageMap[e.eventName] || "/images/history/暂无图片.jpg";
+                    const content = e.process ? e.process.substring(0, 100) + '...' : '暂无简介';
+                    html += '' +
+                        '<div class="event-item bg-white rounded-xl shadow-md p-6 flex gap-6">' +
+                        '<img src="' + imgUrl + '" alt="' + e.eventName + '" class="w-48 h-32 object-cover rounded-lg flex-shrink-0">' +
+                        '<div class="flex-1">' +
+                        '<h3 class="text-xl font-bold text-gray-800 mb-2">' + (e.eventName || '无标题') + '</h3>' +
+                        '<div class="flex gap-4 text-sm text-gray-600 mb-3">' +
+                        '<span>时间：' + (e.occurTime || '未知时间') + '</span>' +
+                        '<span>朝代：' + (e.dynasty || '未知朝代') + '</span>' +
+                        '</div>' +
+                        '<p class="text-gray-700 mb-4">' + content + '</p>' +
+                        '<a href="event-detail.html?id=' + e.eventId + '" class="inline-block bg-red-accent text-white px-6 py-2 rounded hover:bg-red-700 transition">查看详情</a>' +
+                        '</div>' +
+                        '</div>';
+                });
+                $('#eventList').html(html || '<div class="text-center py-12 text-gray-500 bg-white rounded-xl shadow-md">暂无事件</div>');
+                       }
+
+            loadEvent();   // ← 加上这行，页面打开时自动加载数据
+        });              // ← 加上这行，闭合 $(document).ready
     </script>
 </body>
 </html>

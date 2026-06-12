@@ -3,302 +3,516 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>红色记忆游戏大厅 | 英雄城红色记忆</title>
+    <title>互动游戏 - 南昌历史云志</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/3/3.1.1/iconify.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <style>
-        /* 通用卡牌翻转动画 */
-        .card { perspective: 1000px; }
-        .card-inner { transition: transform 0.6s; transform-style: preserve-3d; }
-        .card.flipped .card-inner { transform: rotateY(180deg); }
-        .card-front, .card-back { backface-visibility: hidden; }
-        .card-back { transform: rotateY(180deg); }
-        .match-success { animation: flash 0.8s ease; }
-        @keyframes flash {
-            0%, 100% { background-color: #fef2f2; }
-            50% { background-color: #fca5a5; }
+        .red-accent { color: #C53030; }
+        .bg-red-accent { background-color: #C53030; }
+
+        /* ========== 游戏核心：卡牌翻转 CSS（经过测试可运行） ========== */
+        .flip-card {
+            perspective: 1000px;
+            height: 110px;
+            cursor: pointer;
         }
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            -webkit-transform-style: preserve-3d;
+            text-align: center;
+        }
+        .flip-card.is-flipped .flip-card-inner {
+            transform: rotateY(180deg);
+            -webkit-transform: rotateY(180deg);
+        }
+        .flip-card-front,
+        .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+            padding: 8px;
+        }
+        .flip-card-front {
+            background: linear-gradient(135deg, #C53030, #9B2424);
+            color: white;
+            font-size: 32px;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+        }
+        .flip-card-front:hover {
+            background: linear-gradient(135deg, #9B2424, #7C1D1D);
+        }
+        .flip-card-back {
+            background-color: white;
+            border: 2px solid #FCA5A5;
+            color: #374151;
+            font-size: 14px;
+            font-weight: 500;
+            transform: rotateY(180deg);
+            -webkit-transform: rotateY(180deg);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+        }
+        .flip-card-back.blue-border {
+            border-color: #93C5FD;
+        }
+        .flip-card.matched {
+            opacity: 0.35;
+            cursor: default;
+        }
+
+        /* ========== 游戏切换 ========== */
         .game-tab { display: none; }
         .game-tab.active { display: block; }
+        .game-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+        .game-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(197, 48, 48, 0.2);
+        }
+
+        /* ========== 问答按钮 ========== */
+        .quiz-btn {
+            transition: all 0.2s ease;
+        }
+        .quiz-btn:hover:not(:disabled) {
+            background-color: #FEF2F2;
+            border-color: #F87171;
+        }
     </style>
 </head>
-<body class="bg-gradient-to-br from-red-50 to-orange-50 min-h-screen p-4">
-    <div class="max-w-4xl mx-auto">
-        <!-- 顶部标题 -->
-        <div class="text-center mb-6">
-            <h1 class="text-3xl font-bold text-red-700 mb-2">🏠 红色记忆游戏大厅</h1>
-            <p class="text-gray-600">选择你喜欢的小游戏，边玩边学红色历史！</p>
+<body class="bg-[#F4F1EA] min-h-screen">
+
+    <!-- 导航栏 -->
+    <nav class="bg-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 flex justify-between items-center h-16">
+            <div class="flex items-center space-x-2">
+                <span class="iconify text-3xl red-accent" data-icon="ri:ancient-pavilion-fill"></span>
+                <span class="text-xl font-bold tracking-wider text-gray-800">南昌历史云志</span>
+            </div>
+            <div class="hidden md:flex space-x-8 text-gray-600 font-medium">
+                <a class="hover:text-red-600" href="index.html">首页</a>
+                <a class="hover:text-red-600" href="events.html">历史事件</a>
+                <a class="hover:text-red-600" href="special-81.html">八一专题</a>
+                <a class="hover:text-red-600" href="figures.html">历史人物</a>
+                <a class="hover:text-red-600" href="timeline.html">历史长河</a>
+                <a class="hover:text-red-600" href="faq.html">用户留言</a>
+                <a class="hover:text-red-600" href="quiz.html">互动答题</a>
+                <a class="red-accent border-b-2 border-red-600" href="game.html">互动游戏</a>
+                <a class="hover:text-red-600" href="about.html">关于我们</a>
+            </div>
+            <div class="flex items-center space-x-4">
+                <a class="p-2 text-gray-500 hover:bg-gray-100 rounded-full" href="search.html"><span class="iconify text-xl" data-icon="ri:search-line"></span></a>
+                <a class="bg-red-accent text-white px-4 py-2 rounded-md text-sm hover:bg-red-700 transition" href="admin-login.html">后台管理</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-5xl mx-auto px-4 py-8">
+        <!-- 标题 -->
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-red-700 mb-2">🎮 互动游戏大厅</h1>
+            <p class="text-gray-600 text-lg">选择你喜欢的小游戏，边玩边学南昌历史！</p>
         </div>
 
-        <!-- 游戏切换标签 -->
-        <div class="flex justify-center gap-4 mb-6 flex-wrap">
-            <button onclick="switchGame('pair')" class="game-btn px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">
-                历史配对
+        <!-- 游戏切换按钮 -->
+        <div class="flex justify-center gap-4 mb-8 flex-wrap">
+            <button onclick="switchGame('pair')" id="btn-pair" class="game-tab-btn px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition font-medium shadow">
+                🧩 历史人物配对
             </button>
-            <button onclick="switchGame('quiz')" class="game-btn px-4 py-2 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400 transition">
-                知识问答
+            <button onclick="switchGame('quiz')" id="btn-quiz" class="game-tab-btn px-6 py-2 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400 transition font-medium shadow">
+                ❓ 红色知识问答
             </button>
-            <button onclick="switchGame('memory')" class="game-btn px-4 py-2 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400 transition">
-                记忆翻牌
+            <button onclick="switchGame('memory')" id="btn-memory" class="game-tab-btn px-6 py-2 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400 transition font-medium shadow">
+                🎴 记忆翻牌
             </button>
         </div>
 
         <!-- 游戏1：历史人物&事件配对 -->
         <div id="game-pair" class="game-tab active">
-            <div class="text-center mb-4">
-                <p class="text-gray-600 mb-2">翻开卡牌，将历史事件与对应人物匹配成功即可消除</p>
-                <div class="flex justify-center gap-10 text-lg">
-                    <div>得分：<span id="pair-score" class="text-red-600 font-bold text-xl">0</span></div>
-                    <div>剩余配对：<span id="pair-remain" class="text-red-600 font-bold text-xl">8</span></div>
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <div class="text-center mb-4">
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">历史人物&事件配对</h3>
+                    <p class="text-gray-600 text-sm mb-3">翻开两张卡牌，找到事件和人物匹配的一对！</p>
+                    <div class="flex justify-center gap-10 text-lg">
+                        <div>得分：<span id="pair-score" class="text-red-600 font-bold text-xl">0</span></div>
+                        <div>剩余配对：<span id="pair-remain" class="text-red-600 font-bold text-xl">8</span></div>
+                    </div>
+                    <button onclick="initPairGame()" class="mt-3 text-sm text-red-600 hover:text-red-700 underline">🔄 重新开始</button>
                 </div>
-            </div>
-            <div id="pair-gameBox" class="grid grid-cols-4 md:grid-cols-5 gap-4"></div>
-            <div id="pair-winModal" class="fixed inset-0 bg-black/50 flex items-center justify-center hidden">
-                <div class="bg-white rounded-xl p-8 text-center shadow-2xl">
-                    <h2 class="text-2xl font-bold text-red-700 mb-4">🎉 恭喜配对成功！</h2>
-                    <p class="mb-6">最终得分：<span id="pair-finalScore" class="text-red-600 font-bold text-xl">0</span></p>
-                    <button onclick="restartPairGame()" class="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 transition">
-                        重新开始
-                    </button>
-                </div>
+                <div id="pair-gameBox" class="grid grid-cols-3 md:grid-cols-4 gap-3"></div>
             </div>
         </div>
 
         <!-- 游戏2：红色知识问答 -->
         <div id="game-quiz" class="game-tab">
-            <div class="text-center mb-4">
-                <p class="text-gray-600 mb-2">回答红色历史问题，看看你对英雄城了解多少！</p>
-                <div class="flex justify-center gap-10 text-lg">
-                    <div>得分：<span id="quiz-score" class="text-red-600 font-bold text-xl">0</span></div>
-                    <div>题目：<span id="quiz-index" class="text-red-600 font-bold text-xl">1</span>/5</div>
+            <div class="bg-white rounded-xl shadow-lg p-6 max-w-2xl mx-auto">
+                <div class="text-center mb-4">
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">红色知识问答</h3>
+                    <p class="text-gray-600 text-sm mb-3">回答问题，看看你对英雄城了解多少！</p>
+                    <div class="flex justify-center gap-10 text-lg">
+                        <div>得分：<span id="quiz-score" class="text-red-600 font-bold text-xl">0</span></div>
+                        <div>题目：<span id="quiz-index" class="text-red-600 font-bold text-xl">1</span>/10</div>
+                    </div>
+                    <button onclick="initQuizGame()" class="mt-3 text-sm text-red-600 hover:text-red-700 underline">🔄 重新开始</button>
                 </div>
-            </div>
-            <div id="quiz-box" class="bg-white rounded-xl p-6 shadow-lg max-w-xl mx-auto">
-                <h3 id="quiz-question" class="text-lg font-semibold mb-4 text-center"></h3>
-                <div id="quiz-options" class="space-y-3"></div>
-            </div>
-            <div id="quiz-winModal" class="fixed inset-0 bg-black/50 flex items-center justify-center hidden">
-                <div class="bg-white rounded-xl p-8 text-center shadow-2xl">
-                    <h2 class="text-2xl font-bold text-red-700 mb-4">🎉 问答完成！</h2>
-                    <p class="mb-6">最终得分：<span id="quiz-finalScore" class="text-red-600 font-bold text-xl">0</span></p>
-                    <button onclick="restartQuizGame()" class="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 transition">
-                        重新开始
-                    </button>
+                <div class="rounded-xl p-4">
+                    <h3 id="quiz-question" class="text-lg font-semibold mb-4 text-center text-gray-800"></h3>
+                    <div id="quiz-options" class="space-y-3"></div>
                 </div>
             </div>
         </div>
 
         <!-- 游戏3：红色主题记忆翻牌 -->
         <div id="game-memory" class="game-tab">
-            <div class="text-center mb-4">
-                <p class="text-gray-600 mb-2">找出相同的红色主题词汇，配对消除</p>
-                <div class="flex justify-center gap-10 text-lg">
-                    <div>得分：<span id="memory-score" class="text-red-600 font-bold text-xl">0</span></div>
-                    <div>剩余配对：<span id="memory-remain" class="text-red-600 font-bold text-xl">6</span></div>
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <div class="text-center mb-4">
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">红色主题记忆翻牌</h3>
+                    <p class="text-gray-600 text-sm mb-3">找出两张相同词汇的卡片，配对消除！</p>
+                    <div class="flex justify-center gap-10 text-lg">
+                        <div>得分：<span id="memory-score" class="text-red-600 font-bold text-xl">0</span></div>
+                        <div>剩余配对：<span id="memory-remain" class="text-red-600 font-bold text-xl">8</span></div>
+                    </div>
+                    <button onclick="initMemoryGame()" class="mt-3 text-sm text-red-600 hover:text-red-700 underline">🔄 重新开始</button>
                 </div>
+                <div id="memory-gameBox" class="grid grid-cols-3 md:grid-cols-4 gap-3 max-w-2xl mx-auto"></div>
             </div>
-            <div id="memory-gameBox" class="grid grid-cols-4 gap-4 max-w-xl mx-auto"></div>
-            <div id="memory-winModal" class="fixed inset-0 bg-black/50 flex items-center justify-center hidden">
-                <div class="bg-white rounded-xl p-8 text-center shadow-2xl">
-                    <h2 class="text-2xl font-bold text-red-700 mb-4">🎉 记忆配对成功！</h2>
-                    <p class="mb-6">最终得分：<span id="memory-finalScore" class="text-red-600 font-bold text-xl">0</span></p>
-                    <button onclick="restartMemoryGame()" class="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 transition">
-                        重新开始
-                    </button>
-                </div>
+        </div>
+
+        <!-- 通用胜利弹窗 -->
+        <div id="winModal" class="fixed inset-0 bg-black/50 flex items-center justify-center hidden z-[100]">
+            <div class="bg-white rounded-xl p-8 text-center shadow-2xl max-w-md mx-4">
+                <div class="text-6xl mb-4">🎉</div>
+                <h2 id="winTitle" class="text-2xl font-bold text-red-700 mb-2">恭喜完成！</h2>
+                <p id="winScore" class="mb-6 text-lg text-gray-700"></p>
+                <button onclick="restartCurrentGame()" class="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 transition font-medium">
+                    再玩一次
+                </button>
+                <button onclick="closeWinModal()" class="ml-2 bg-gray-300 text-gray-800 px-6 py-2 rounded-lg hover:bg-gray-400 transition font-medium">
+                    关闭
+                </button>
             </div>
+        </div>
+
+        <div class="text-center mt-8">
+            <a href="index.html" class="inline-flex items-center gap-2 text-red-600 hover:text-red-700 transition">
+                <span class="iconify" data-icon="ri:arrow-left-line"></span>
+                返回首页
+            </a>
         </div>
     </div>
 
+    <footer class="bg-gray-900 text-white py-6 mt-12">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p>© 2026 南昌历史云志 · 互动游戏专区</p>
+        </div>
+    </footer>
+
     <script>
-        // ------------------- 游戏大厅切换 -------------------
+        /* ========== 游戏切换 ========== */
+        var currentGame = 'pair';
         function switchGame(gameName) {
-            document.querySelectorAll('.game-tab').forEach(tab => tab.classList.remove('active'));
-            document.querySelectorAll('.game-btn').forEach(btn => {
-                btn.classList.remove('bg-red-600', 'text-white');
-                btn.classList.add('bg-gray-300', 'text-gray-800');
-            });
-            document.getElementById(`game-${gameName}`).classList.add('active');
-            event.target.classList.remove('bg-gray-300', 'text-gray-800');
-            event.target.classList.add('bg-red-600', 'text-white');
+            currentGame = gameName;
+            var tabs = document.querySelectorAll('.game-tab');
+            for (var i = 0; i < tabs.length; i++) {
+                tabs[i].classList.remove('active');
+            }
+            var btns = document.querySelectorAll('.game-tab-btn');
+            for (var j = 0; j < btns.length; j++) {
+                btns[j].classList.remove('bg-red-600', 'text-white');
+                btns[j].classList.add('bg-gray-300', 'text-gray-800');
+            }
+            document.getElementById('game-' + gameName).classList.add('active');
+            var btn = document.getElementById('btn-' + gameName);
+            btn.classList.remove('bg-gray-300', 'text-gray-800');
+            btn.classList.add('bg-red-600', 'text-white');
         }
 
-        // ------------------- 游戏1：历史配对 -------------------
-        const pairList = [
-            { event: "南昌起义", person: "周恩来" },
-            { event: "南昌起义", person: "贺龙" },
-            { event: "井冈山会师", person: "毛泽东" },
-            { event: "井冈山会师", person: "朱德" },
-            { event: "秋收起义", person: "毛泽东" },
-            { event: "长征", person: "红军战士" },
-            { event: "遵义会议", person: "毛泽东" },
-            { event: "八一精神", person: "革命先烈" }
-        ];
-        let pairCards = [];
-        pairList.forEach(item => {
-            pairCards.push({ type: "event", content: item.event, target: item.person });
-            pairCards.push({ type: "person", content: item.person, target: item.event });
-        });
-        let pairFirst = null, pairLock = false, pairScore = 0, pairRemain = pairList.length;
-        const pairGameBox = document.getElementById("pair-gameBox");
-        const pairScoreDom = document.getElementById("pair-score");
-        const pairRemainDom = document.getElementById("pair-remain");
-        const pairWinModal = document.getElementById("pair-winModal");
-        const pairFinalScoreDom = document.getElementById("pair-finalScore");
+        /* ========== 通用工具函数 ========== */
+        function shuffle(arr) {
+            for (var i = arr.length - 1; i > 0; i--) {
+                var j = Math.floor(Math.random() * (i + 1));
+                var temp = arr[i];
+                arr[i] = arr[j];
+                arr[j] = temp;
+            }
+            return arr;
+        }
 
-        function shuffle(arr) { return arr.sort(() => Math.random() - 0.5); }
+        function showWinModal(title, score) {
+            document.getElementById('winTitle').innerText = title;
+            document.getElementById('winScore').innerText = '最终得分：' + score + ' 分';
+            document.getElementById('winModal').classList.remove('hidden');
+        }
+
+        function closeWinModal() {
+            document.getElementById('winModal').classList.add('hidden');
+        }
+
+        function restartCurrentGame() {
+            closeWinModal();
+            if (currentGame === 'pair') initPairGame();
+            else if (currentGame === 'quiz') initQuizGame();
+            else if (currentGame === 'memory') initMemoryGame();
+        }
+
+        /* =================== 游戏1：历史人物&事件配对 =================== */
+        var pairData = [
+            { event: "八一南昌起义", person: "周恩来" },
+            { event: "八一南昌起义", person: "贺龙" },
+            { event: "灌婴筑城", person: "灌婴" },
+            { event: "滕王阁始建", person: "李元婴" },
+            { event: "洪都之战", person: "朱文正" },
+            { event: "王守仁平叛", person: "王守仁" },
+            { event: "新四军进驻南昌", person: "叶挺" },
+            { event: "创办《新江西》", person: "袁玉冰" }
+        ];
+
+        var pairCards = [];
+        pairData.forEach(function(item, idx) {
+            pairCards.push({ id: 'p' + idx, type: 'event', text: item.event });
+            pairCards.push({ id: 'p' + idx, type: 'person', text: item.person });
+        });
+
+        var pairFirst = null;
+        var pairLock = false;
+        var pairScore = 0;
+        var pairRemain = 0;
 
         function initPairGame() {
-            pairGameBox.innerHTML = "";
-            pairFirst = null; pairLock = false; pairScore = 0; pairRemain = pairList.length;
-            pairScoreDom.innerText = pairScore; pairRemainDom.innerText = pairRemain;
-            pairWinModal.classList.add("hidden");
-            let shuffled = shuffle([...pairCards]);
-            shuffled.forEach((item) => {
-                const card = document.createElement("div");
-                card.className = "card cursor-pointer";
-                card.dataset.target = item.target;
-                card.dataset.content = item.content;
-                card.innerHTML = `
-                    <div class="card-inner relative h-24 md:h-28">
-                        <div class="card-front absolute inset-0 bg-red-600 rounded-xl flex items-center justify-center text-white text-xl font-bold shadow-lg hover:bg-red-700 transition">❓</div>
-                        <div class="card-back absolute inset-0 bg-white rounded-xl flex items-center justify-center border-2 border-red-400 shadow-md p-2"><span class="text-gray-800 font-medium text-sm md:text-base">${item.content}</span></div>
-                    </div>
-                `;
-                card.addEventListener("click", () => {
-                    if (pairLock || card.classList.contains("flipped")) return;
-                    card.classList.add("flipped");
-                    if (!pairFirst) {
-                        pairFirst = card;
-                    } else {
-                        pairLock = true;
-                        if (pairFirst.dataset.target === card.dataset.content && card.dataset.target === pairFirst.dataset.content) {
-                            pairScore += 20; pairRemain--;
-                            pairScoreDom.innerText = pairScore; pairRemainDom.innerText = pairRemain;
-                            pairFirst.classList.add("match-success"); card.classList.add("match-success");
-                            pairLock = false; pairFirst = null;
-                            if (pairRemain <= 0) {
-                                setTimeout(() => { pairFinalScoreDom.innerText = pairScore; pairWinModal.classList.remove("hidden"); }, 600);
-                            }
-                        } else {
-                            setTimeout(() => {
-                                pairFirst.classList.remove("flipped"); card.classList.remove("flipped");
-                                pairLock = false; pairFirst = null;
-                            }, 1000);
-                        }
-                    }
-                });
-                pairGameBox.appendChild(card);
-            });
-        }
-        function restartPairGame() { initPairGame(); }
+            var box = document.getElementById('pair-gameBox');
+            box.innerHTML = '';
+            pairFirst = null;
+            pairLock = false;
+            pairScore = 0;
+            pairRemain = pairData.length;
+            document.getElementById('pair-score').innerText = pairScore;
+            document.getElementById('pair-remain').innerText = pairRemain;
 
-        // ------------------- 游戏2：知识问答 -------------------
-        const quizList = [
-            { q: "南昌起义发生在哪一年？", options: ["1926", "1927", "1928", "1929"], answer: 1 },
-            { q: "井冈山会师的两支主要部队是？", options: ["红军和八路军", "毛泽东和朱德的部队", "红军和新四军", "八路军和新四军"], answer: 1 },
-            { q: "长征的出发地是？", options: ["瑞金", "遵义", "延安", "井冈山"], answer: 0 },
-            { q: "遵义会议确立了谁的领导地位？", options: ["周恩来", "毛泽东", "朱德", "邓小平"], answer: 1 },
-            { q: "八一建军节是为了纪念？", options: ["南昌起义", "秋收起义", "长征", "抗日战争胜利"], answer: 0 }
+            var shuffled = shuffle(pairCards.slice());
+
+            for (var i = 0; i < shuffled.length; i++) {
+                var item = shuffled[i];
+                var card = document.createElement('div');
+                card.className = 'flip-card';
+                card.dataset.pairid = item.id;
+                card.dataset.type = item.type;
+
+                var borderClass = item.type === 'event' ? '' : 'blue-border';
+
+                card.innerHTML =
+                    '<div class="flip-card-inner">' +
+                        '<div class="flip-card-front">?</div>' +
+                        '<div class="flip-card-back ' + borderClass + '">' + item.text + '</div>' +
+                    '</div>';
+
+                card.onclick = function(cardEl) {
+                    return function() {
+                        if (pairLock || cardEl.classList.contains('is-flipped') || cardEl.classList.contains('matched')) return;
+                        cardEl.classList.add('is-flipped');
+                        if (!pairFirst) {
+                            pairFirst = cardEl;
+                        } else {
+                            pairLock = true;
+                            if (pairFirst.dataset.pairid === cardEl.dataset.pairid && pairFirst.dataset.type !== cardEl.dataset.type) {
+                                // 配对成功
+                                pairScore += 20;
+                                pairRemain--;
+                                document.getElementById('pair-score').innerText = pairScore;
+                                document.getElementById('pair-remain').innerText = pairRemain;
+                                setTimeout(function() {
+                                    pairFirst.classList.add('matched');
+                                    cardEl.classList.add('matched');
+                                    pairLock = false;
+                                    pairFirst = null;
+                                    if (pairRemain <= 0) {
+                                        setTimeout(function() { showWinModal('🎉 历史配对完成！', pairScore); }, 500);
+                                    }
+                                }, 700);
+                            } else {
+                                // 配对失败
+                                setTimeout(function() {
+                                    pairFirst.classList.remove('is-flipped');
+                                    cardEl.classList.remove('is-flipped');
+                                    pairLock = false;
+                                    pairFirst = null;
+                                }, 1200);
+                            }
+                        }
+                    };
+                }(card);
+
+                box.appendChild(card);
+            }
+        }
+
+        /* =================== 游戏2：红色知识问答 =================== */
+        var quizData = [
+            { q: '南昌起义发生在哪一年？', options: ['1926年', '1927年', '1928年', '1929年'], answer: 1, tip: '八一南昌起义，打响了武装反抗国民党反动派的第一枪。' },
+            { q: '南昌起义的主要领导人之一是？', options: ['孙中山', '周恩来', '邓小平', '陈毅'], answer: 1, tip: '周恩来、贺龙、叶挺、朱德、刘伯承等领导了南昌起义。' },
+            { q: '灌婴筑城建立南昌城，是在哪个朝代？', options: ['秦朝', '西汉', '东汉', '三国'], answer: 1, tip: '公元前202年，西汉大将灌婴在此筑城，称为灌城。' },
+            { q: '滕王阁是谁修建的？', options: ['王勃', '李元婴', '韩愈', '苏轼'], answer: 1, tip: '唐永徽四年（653年），唐太宗之弟李元婴任洪州都督时建造。' },
+            { q: '滕王阁序的作者是？', options: ['李白', '杜甫', '王勃', '白居易'], answer: 2, tip: '王勃在滕王阁上写下了千古名篇《滕王阁序》。' },
+            { q: '井冈山会师发生在哪一年？', options: ['1927年', '1928年', '1929年', '1930年'], answer: 1, tip: '1928年4月，朱德、陈毅率部与毛泽东在井冈山胜利会师。' },
+            { q: '被誉为"英雄城"的是哪座城市？', options: ['北京', '上海', '南昌', '广州'], answer: 2, tip: '南昌因八一南昌起义被誉为"英雄城"，是军旗升起的地方。' },
+            { q: '新四军军部进驻南昌是在哪一年？', options: ['1937年', '1938年', '1939年', '1940年'], answer: 0, tip: '1937年12月，新四军军部在汉口成立，后移驻南昌。' },
+            { q: '《新江西》半月刊是谁创办的？', options: ['袁玉冰', '方志敏', '赵醒侬', '以上都是'], answer: 3, tip: '1922年，袁玉冰、方志敏、赵醒侬等创办《新江西》，宣传革命思想。' },
+            { q: '洪都之战是哪位将领以少胜多的经典战役？', options: ['朱文正', '王守仁', '朱元璋', '陈友谅'], answer: 0, tip: '1363年，朱元璋侄子朱文正在洪都（南昌）以2万兵力抵御陈友谅60万大军。' }
         ];
-        let quizIndex = 0, quizScore = 0;
-        const quizQuestion = document.getElementById("quiz-question");
-        const quizOptions = document.getElementById("quiz-options");
-        const quizScoreDom = document.getElementById("quiz-score");
-        const quizIndexDom = document.getElementById("quiz-index");
-        const quizWinModal = document.getElementById("quiz-winModal");
-        const quizFinalScoreDom = document.getElementById("quiz-finalScore");
+
+        var quizIndex = 0;
+        var quizScore = 0;
 
         function initQuizGame() {
-            quizIndex = 0; quizScore = 0;
-            quizScoreDom.innerText = quizScore; quizIndexDom.innerText = quizIndex + 1;
-            quizWinModal.classList.add("hidden");
+            quizIndex = 0;
+            quizScore = 0;
+            document.getElementById('quiz-score').innerText = quizScore;
+            document.getElementById('quiz-index').innerText = quizIndex + 1;
             showQuizQuestion();
         }
-        function showQuizQuestion() {
-            const q = quizList[quizIndex];
-            quizQuestion.innerText = q.q;
-            quizOptions.innerHTML = "";
-            q.options.forEach((opt, i) => {
-                const btn = document.createElement("button");
-                btn.className = "w-full py-2 px-4 border border-gray-300 rounded-lg hover:bg-red-50 transition text-left";
-                btn.innerText = opt;
-                btn.onclick = () => {
-                    if (i === q.answer) {
-                        quizScore += 20; quizScoreDom.innerText = quizScore;
-                    }
-                    quizIndex++;
-                    if (quizIndex >= quizList.length) {
-                        quizFinalScoreDom.innerText = quizScore;
-                        quizWinModal.classList.remove("hidden");
-                    } else {
-                        quizIndexDom.innerText = quizIndex + 1;
-                        showQuizQuestion();
-                    }
-                };
-                quizOptions.appendChild(btn);
-            });
-        }
-        function restartQuizGame() { initQuizGame(); }
 
-        // ------------------- 游戏3：记忆翻牌 -------------------
-        const memoryWords = ["红军", "长征", "井冈山", "八一", "南昌起义", "革命", "红军", "长征", "井冈山", "八一", "南昌起义", "革命"];
-        let memoryFirst = null, memoryLock = false, memoryScore = 0, memoryRemain = 6;
-        const memoryGameBox = document.getElementById("memory-gameBox");
-        const memoryScoreDom = document.getElementById("memory-score");
-        const memoryRemainDom = document.getElementById("memory-remain");
-        const memoryWinModal = document.getElementById("memory-winModal");
-        const memoryFinalScoreDom = document.getElementById("memory-finalScore");
+        function showQuizQuestion() {
+            var q = quizData[quizIndex];
+            document.getElementById('quiz-question').innerText = '第 ' + (quizIndex + 1) + ' 题：' + q.q;
+            var optionsBox = document.getElementById('quiz-options');
+            optionsBox.innerHTML = '';
+            var letters = ['A', 'B', 'C', 'D'];
+
+            for (var i = 0; i < q.options.length; i++) {
+                (function(idx) {
+                    var btn = document.createElement('button');
+                    btn.className = 'quiz-btn w-full py-3 px-4 border-2 border-gray-300 rounded-lg text-left text-gray-800 font-medium flex items-center gap-3';
+                    btn.innerHTML = '<span class="inline-block w-8 h-8 rounded-full bg-red-100 text-red-600 font-bold text-center leading-8 flex-shrink-0">' + letters[idx] + '</span>' + q.options[idx];
+                    btn.onclick = function() {
+                        var allBtns = optionsBox.querySelectorAll('button');
+                        for (var b = 0; b < allBtns.length; b++) {
+                            allBtns[b].setAttribute('disabled', 'true');
+                        }
+
+                        if (idx === q.answer) {
+                            btn.classList.remove('border-gray-300');
+                            btn.classList.add('border-green-500', 'bg-green-50');
+                            quizScore += 20;
+                            document.getElementById('quiz-score').innerText = quizScore;
+                            var tipBox = document.createElement('div');
+                            tipBox.className = 'mt-3 p-3 bg-green-50 border border-green-200 rounded-lg text-sm text-green-800';
+                            tipBox.innerText = '✅ 正确！' + q.tip;
+                            optionsBox.appendChild(tipBox);
+                        } else {
+                            btn.classList.remove('border-gray-300');
+                            btn.classList.add('border-red-500', 'bg-red-50');
+                            allBtns[q.answer].classList.remove('border-gray-300');
+                            allBtns[q.answer].classList.add('border-green-500', 'bg-green-50');
+                            var tipBox2 = document.createElement('div');
+                            tipBox2.className = 'mt-3 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-800';
+                            tipBox2.innerText = '❌ 正确答案是 ' + letters[q.answer] + '。' + q.tip;
+                            optionsBox.appendChild(tipBox2);
+                        }
+
+                        setTimeout(function() {
+                            quizIndex++;
+                            if (quizIndex >= quizData.length) {
+                                showWinModal('🎉 问答挑战完成！', quizScore);
+                            } else {
+                                document.getElementById('quiz-index').innerText = quizIndex + 1;
+                                showQuizQuestion();
+                            }
+                        }, 2500);
+                    };
+                    optionsBox.appendChild(btn);
+                })(i);
+            }
+        }
+
+        /* =================== 游戏3：红色主题记忆翻牌 =================== */
+        var memoryWords = ['红军', '长征', '井冈山', '八一', '南昌起义', '革命', '英雄城', '军旗升起'];
+        var memoryFirst = null;
+        var memoryLock = false;
+        var memoryScore = 0;
+        var memoryRemain = 0;
 
         function initMemoryGame() {
-            memoryGameBox.innerHTML = "";
-            memoryFirst = null; memoryLock = false; memoryScore = 0; memoryRemain = 6;
-            memoryScoreDom.innerText = memoryScore; memoryRemainDom.innerText = memoryRemain;
-            memoryWinModal.classList.add("hidden");
-            let shuffled = shuffle([...memoryWords]);
-            shuffled.forEach((word) => {
-                const card = document.createElement("div");
-                card.className = "card cursor-pointer";
-                card.dataset.word = word;
-                card.innerHTML = `
-                    <div class="card-inner relative h-20">
-                        <div class="card-front absolute inset-0 bg-red-600 rounded-lg flex items-center justify-center text-white text-xl font-bold shadow-lg hover:bg-red-700 transition">❓</div>
-                        <div class="card-back absolute inset-0 bg-white rounded-lg flex items-center justify-center border-2 border-red-400 shadow-md"><span class="text-gray-800 font-medium">${word}</span></div>
-                    </div>
-                `;
-                card.addEventListener("click", () => {
-                    if (memoryLock || card.classList.contains("flipped")) return;
-                    card.classList.add("flipped");
-                    if (!memoryFirst) {
-                        memoryFirst = card;
-                    } else {
-                        memoryLock = true;
-                        if (memoryFirst.dataset.word === card.dataset.word) {
-                            memoryScore += 15; memoryRemain--;
-                            memoryScoreDom.innerText = memoryScore; memoryRemainDom.innerText = memoryRemain;
-                            memoryFirst.classList.add("match-success"); card.classList.add("match-success");
-                            memoryLock = false; memoryFirst = null;
-                            if (memoryRemain <= 0) {
-                                setTimeout(() => { memoryFinalScoreDom.innerText = memoryScore; memoryWinModal.classList.remove("hidden"); }, 600);
-                            }
-                        } else {
-                            setTimeout(() => {
-                                memoryFirst.classList.remove("flipped"); card.classList.remove("flipped");
-                                memoryLock = false; memoryFirst = null;
-                            }, 1000);
-                        }
-                    }
-                });
-                memoryGameBox.appendChild(card);
-            });
-        }
-        function restartMemoryGame() { initMemoryGame(); }
+            var box = document.getElementById('memory-gameBox');
+            box.innerHTML = '';
+            memoryFirst = null;
+            memoryLock = false;
+            memoryScore = 0;
+            memoryRemain = memoryWords.length;
+            document.getElementById('memory-score').innerText = memoryScore;
+            document.getElementById('memory-remain').innerText = memoryRemain;
 
-        // 页面加载初始化所有游戏
-        window.onload = function() {
-            initPairGame();
-            initQuizGame();
-            initMemoryGame();
-        };
+            var cards = [];
+            for (var i = 0; i < memoryWords.length; i++) {
+                cards.push(memoryWords[i]);
+                cards.push(memoryWords[i]);
+            }
+
+            var shuffled = shuffle(cards);
+
+            for (var j = 0; j < shuffled.length; j++) {
+                (function(word) {
+                    var card = document.createElement('div');
+                    card.className = 'flip-card';
+                    card.dataset.word = word;
+                    card.innerHTML =
+                        '<div class="flip-card-inner">' +
+                            '<div class="flip-card-front">?</div>' +
+                            '<div class="flip-card-back">' + word + '</div>' +
+                        '</div>';
+
+                    card.onclick = function() {
+                        if (memoryLock || card.classList.contains('is-flipped') || card.classList.contains('matched')) return;
+                        card.classList.add('is-flipped');
+                        if (!memoryFirst) {
+                            memoryFirst = card;
+                        } else {
+                            memoryLock = true;
+                            if (memoryFirst.dataset.word === card.dataset.word) {
+                                memoryScore += 15;
+                                memoryRemain--;
+                                document.getElementById('memory-score').innerText = memoryScore;
+                                document.getElementById('memory-remain').innerText = memoryRemain;
+                                setTimeout(function() {
+                                    memoryFirst.classList.add('matched');
+                                    card.classList.add('matched');
+                                    memoryLock = false;
+                                    memoryFirst = null;
+                                    if (memoryRemain <= 0) {
+                                        setTimeout(function() { showWinModal('🎉 记忆配对成功！', memoryScore); }, 500);
+                                    }
+                                }, 700);
+                            } else {
+                                setTimeout(function() {
+                                    memoryFirst.classList.remove('is-flipped');
+                                    card.classList.remove('is-flipped');
+                                    memoryLock = false;
+                                    memoryFirst = null;
+                                }, 1200);
+                            }
+                        }
+                    };
+                    box.appendChild(card);
+                })(shuffled[j]);
+            }
+        }
+
+        /* ========== 页面加载后初始化游戏 ========== */
+        initPairGame();
+        initQuizGame();
+        initMemoryGame();
     </script>
 </body>
 </html>

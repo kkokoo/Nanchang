@@ -1,6 +1,6 @@
+
 package com.team.user_admin_system.controller;
 
-import ai.z.openapi.service.model.ChatMessage;
 import com.team.user_admin_system.service.ZhipuAIService;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -19,8 +19,8 @@ public class ChatController {
     public Map<String,String> chat(@RequestBody Map<String,Object> req){
         String msg = (String) req.get("message");
         @SuppressWarnings("unchecked")
-        List<ChatMessage> history = (List<ChatMessage>) req.getOrDefault("history",List.of());
-        String ans = zhipuAIService.chatWithAI(msg,history);
+        List<Map<String, String>> history = (List<Map<String, String>>) req.getOrDefault("history", List.of());
+        String ans = zhipuAIService.chatWithAI(msg, history);
         return Map.of("response",ans);
     }
 }
