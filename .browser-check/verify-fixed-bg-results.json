@@ -1,0 +1,119 @@
+{
+  "fixedBg": {
+    "exists": true,
+    "position": "fixed",
+    "inset": "0px",
+    "top": "0px",
+    "left": "0px",
+    "right": "0px",
+    "bottom": "0px",
+    "zIndex": "0",
+    "backgroundImage": "url(\"http://localhost:5175/images/history/%E8%8B%B1%E9%9B%84%E5%9F%8E%E5%8D%97%E6%98%8C.jpg\")",
+    "backgroundSize": "cover",
+    "backgroundRepeat": "no-repeat",
+    "backgroundPosition": "50% 50%",
+    "rect": {
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 900
+    }
+  },
+  "hero": {
+    "exists": true,
+    "heroZIndex": "1",
+    "heroBgColor": "rgba(0, 0, 0, 0)",
+    "heroBgImage": "none",
+    "heroOpacity": "1",
+    "overlayExists": true,
+    "overlayBg": "rgba(0, 0, 0, 0) linear-gradient(135deg, rgba(26, 22, 20, 0.5) 0%, rgba(155, 44, 44, 0.35) 60%, rgba(26, 22, 20, 0.55) 100%) repeat scroll 0% 0% / auto padding-box border-box",
+    "overlayBgImage": "linear-gradient(135deg, rgba(26, 22, 20, 0.5) 0%, rgba(155, 44, 44, 0.35) 60%, rgba(26, 22, 20, 0.55) 100%)",
+    "heroAboveFixed": true
+  },
+  "contentSections": {
+    "jingxuan": {
+      "found": true,
+      "className": "section",
+      "backgroundColor": "rgb(250, 248, 245)",
+      "backgroundImage": "none",
+      "zIndex": "2",
+      "midEl": {
+        "tag": "A",
+        "className": "event-card reveal-item",
+        "backgroundColor": "rgb(255, 255, 255)",
+        "depth": 2
+      }
+    },
+    "theme": {
+      "found": true,
+      "className": "section theme-section",
+      "backgroundColor": "rgba(0, 0, 0, 0)",
+      "backgroundImage": "linear-gradient(rgb(251, 248, 243) 0%, rgb(245, 239, 228) 100%)",
+      "zIndex": "2",
+      "midEl": {
+        "tag": "P",
+        "className": "",
+        "noSolidBg": true
+      }
+    }
+  },
+  "scrollStability": {
+    "beforeScroll": {
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 900
+    },
+    "afterScroll": {
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 900
+    },
+    "samples": [
+      {
+        "label": "top",
+        "pos": {
+          "x": 0,
+          "y": 0,
+          "w": 1440,
+          "h": 900
+        }
+      },
+      {
+        "label": "middle",
+        "pos": {
+          "x": 0,
+          "y": 0,
+          "w": 1440,
+          "h": 900
+        }
+      },
+      {
+        "label": "near-bottom",
+        "pos": {
+          "x": 0,
+          "y": 0,
+          "w": 1440,
+          "h": 900
+        }
+      }
+    ],
+    "fixedInPlace": true
+  },
+  "screenshots": {
+    "initial": {
+      "path": "d:\\Desktop\\trae\\Nanchang\\home-fixed-1.png",
+      "saved": true,
+      "size": 962283
+    },
+    "scrolled": {
+      "path": "d:\\Desktop\\trae\\Nanchang\\home-fixed-2.png",
+      "saved": true,
+      "size": 738562
+    }
+  },
+  "consoleErrors": [],
+  "pageErrors": [],
+  "failedRequests": []
+}

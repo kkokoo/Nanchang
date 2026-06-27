@@ -11,10 +11,10 @@
         <relativePath/>
     </parent>
     <groupId>com.team</groupId>
-    <artifactId>user-admin-system</artifactId>
+    <artifactId>nanchang-history-server</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>user-admin-system</name>
-    <description>用户管理系统</description>
+    <name>nanchang-history-server</name>
+    <description>南昌历史云志服务端 - 南昌历史文化科普平台后端</description>
     <properties>
         <java.version>17</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

@@ -1,0 +1,190 @@
+{
+  "home": {
+    "pageBg": {
+      "exists": true,
+      "opacity": "0.12",
+      "background": "url(\"http://localhost:5175/images/history/%E8%8B%B1%E9%9B%84%E5%9F%8E%E5%8D%97%E6%98%8C.jpg\")",
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 900,
+        "top": 0,
+        "right": 1440,
+        "bottom": 900,
+        "left": 0
+      }
+    },
+    "heroOverlay": {
+      "exists": true,
+      "background": "linear-gradient(135deg, rgba(26, 22, 20, 0.45) 0%, rgba(155, 44, 44, 0.35) 60%, rgba(26, 22, 20, 0.5) 100%)",
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 828,
+        "top": 0,
+        "right": 1440,
+        "bottom": 828,
+        "left": 0
+      }
+    },
+    "heroBg": {
+      "exists": true,
+      "background": "url(\"http://localhost:5175/images/history/%E8%8B%B1%E9%9B%84%E5%9F%8E%E5%8D%97%E6%98%8C.jpg\")"
+    },
+    "heroTitle": "英雄城南昌打响第一枪的地方",
+    "consoleErrors": [],
+    "pageErrors": [],
+    "notFoundUrls": [],
+    "failedRequests": [],
+    "screenshot": {
+      "path": "d:\\Desktop\\trae\\Nanchang\\home-bg-check.png",
+      "saved": true
+    }
+  },
+  "special81": {
+    "heroTitle": "打响武装反抗的第一枪",
+    "metaNums": [
+      "1927",
+      "08.01",
+      "02:00"
+    ],
+    "sections": [
+      {
+        "id": "background",
+        "num": "01",
+        "title": "历史背景：风云变幻"
+      },
+      {
+        "id": "preparation",
+        "num": "02",
+        "title": "秘密准备：大旅社风云"
+      },
+      {
+        "id": "process",
+        "num": "03",
+        "title": "凌晨枪声：激战南昌城"
+      },
+      {
+        "id": "significance",
+        "num": "04",
+        "title": "深远意义：建军的开端"
+      },
+      {
+        "id": "archives",
+        "num": "05",
+        "title": "原始文献：历史的见证"
+      },
+      {
+        "id": "model",
+        "num": "06",
+        "title": "数字模型：还原历史场景"
+      },
+      {
+        "id": "vr",
+        "num": "07",
+        "title": "VR全景：身临其境红色景点"
+      }
+    ],
+    "sectionCount": 7,
+    "nav": {
+      "exists": true,
+      "position": "sticky",
+      "top": "64px",
+      "zIndex": "40",
+      "linkCount": 7,
+      "linkTexts": [
+        "起义背景",
+        "秘密准备",
+        "凌晨枪声",
+        "深远意义",
+        "原始文献",
+        "模型展示",
+        "VR体验"
+      ]
+    },
+    "bilibili": {
+      "src": "http://player.bilibili.com/player.html?isOutside=true&aid=297880008&bvid=BV1pF41137Dk&cid=567457654&p=1"
+    },
+    "vr": {
+      "src": "https://www.720yun.com/t/44vkt7fhr7m?scene_id=73584678"
+    },
+    "leaders": [
+      {
+        "name": "周恩来",
+        "imgSrc": "http://localhost:8080/images/role/%E5%91%A8%E6%81%A9%E6%9D%A5.jpg",
+        "imgComplete": true,
+        "imgNaturalWidth": 163
+      },
+      {
+        "name": "贺龙",
+        "imgSrc": "http://localhost:8080/images/role/%E8%B4%BA%E9%BE%99.jpg",
+        "imgComplete": true,
+        "imgNaturalWidth": 284
+      },
+      {
+        "name": "叶挺",
+        "imgSrc": "http://localhost:8080/images/role/%E5%8F%B6%E6%8C%BA.jpg",
+        "imgComplete": true,
+        "imgNaturalWidth": 336
+      },
+      {
+        "name": "朱德",
+        "imgSrc": "http://localhost:8080/images/role/%E6%9C%B1%E5%BE%B7.jpg",
+        "imgComplete": true,
+        "imgNaturalWidth": 255
+      },
+      {
+        "name": "刘伯承",
+        "imgSrc": "http://localhost:8080/images/role/%E5%88%98%E4%BC%AF%E6%89%BF.jpg",
+        "imgComplete": true,
+        "imgNaturalWidth": 305
+      }
+    ],
+    "leaderCount": 5,
+    "pageBg": {
+      "exists": true,
+      "opacity": "0.08",
+      "background": "url(\"http://localhost:5175/images/history/%E5%8D%97%E6%98%8C%E8%B5%B7%E4%B9%89%E6%97%A7%E5%9D%80.jpg\")"
+    },
+    "consoleErrors": [
+      "Failed to load resource: the server responded with a status of 401 ()",
+      "@bilibili/bili-user-fingerprint(report): report is not found"
+    ],
+    "pageErrors": [],
+    "notFoundUrls": [],
+    "failedRequests": [
+      "401 https://apiv4.720yun.com/member/me"
+    ],
+    "screenshot": {
+      "path": "d:\\Desktop\\trae\\Nanchang\\special81-full-check.png",
+      "saved": true
+    }
+  },
+  "threeD2": {
+    "title": "雕塑《石破天惊》",
+    "iframe": {
+      "exists": true,
+      "src": "http://localhost:5175/3d2.html"
+    },
+    "canvas": {
+      "accessible": true,
+      "canvasExists": true,
+      "canvasW": 950,
+      "canvasH": 600,
+      "loadingText": "✅ 模型加载完成！鼠标拖拽查看各个角度",
+      "loadingDisplay": "block",
+      "errorDisplay": "none",
+      "errorText": "模型加载失败，请检查文件路径"
+    },
+    "consoleErrors": [],
+    "pageErrors": [],
+    "notFoundUrls": [],
+    "failedRequests": [],
+    "screenshot": {
+      "path": "d:\\Desktop\\trae\\Nanchang\\3d2-check.png",
+      "saved": true
+    }
+  }
+}

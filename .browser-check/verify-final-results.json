@@ -1,0 +1,315 @@
+{
+  "home": {
+    "hero": {
+      "hero": {
+        "bgImage": "none",
+        "opacity": "1",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 1440,
+          "height": 828,
+          "top": 0,
+          "right": 1440,
+          "bottom": 828,
+          "left": 0
+        }
+      },
+      "heroBg": {
+        "bgImage": "url(\"http://localhost:5175/images/history/%E8%8B%B1%E9%9B%84%E5%9F%8E%E5%8D%97%E6%98%8C.jpg\")",
+        "opacity": "1",
+        "rect": {
+          "x": 0,
+          "y": -62.30500030517578,
+          "width": 1440,
+          "height": 993.59375,
+          "top": -62.30500030517578,
+          "right": 1440,
+          "bottom": 931.2887496948242,
+          "left": 0
+        },
+        "inlineStyle": "background-image: url(\"/images/history/英雄城南昌.jpg\"); translate: none; rotate: none; scale: none; transform: translate(0%, 2.0624%) translate3d(0px, 0px, 0px);"
+      },
+      "heroOverlay": {
+        "bgImage": "linear-gradient(135deg, rgba(26, 22, 20, 0.45) 0%, rgba(155, 44, 44, 0.35) 60%, rgba(26, 22, 20, 0.5) 100%)",
+        "opacity": "1",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 1440,
+          "height": 828,
+          "top": 0,
+          "right": 1440,
+          "bottom": 828,
+          "left": 0
+        },
+        "background": "linear-gradient(135deg, rgba(26, 22, 20, 0.45) 0%, rgba(155, 44, 44, 0.35) 60%, rgba(26, 22, 20, 0.5) 100%)"
+      }
+    },
+    "heroBgLoaded": {
+      "hasUrl": true,
+      "loaded": true,
+      "naturalW": 1280,
+      "naturalH": 970
+    },
+    "contentBg": {
+      "found": true,
+      "tag": "A",
+      "className": "event-card reveal-item",
+      "backgroundColor": "rgb(255, 255, 255)",
+      "backgroundImage": "none",
+      "opacity": "1",
+      "depth": 2
+    },
+    "bodyBg": {
+      "bodyBg": "rgb(251, 248, 243)",
+      "bodyBgImage": "radial-gradient(circle at 20% 10%, rgba(201, 162, 39, 0.05) 0%, rgba(0, 0, 0, 0) 40%), radial-gradient(circle at 80% 80%, rgba(197, 48, 48, 0.04) 0%, rgba(0, 0, 0, 0) 45%)",
+      "mainBg": "rgba(0, 0, 0, 0)",
+      "mainBgImage": "none"
+    },
+    "hasPageBg": true,
+    "consoleErrors": [],
+    "pageErrors": [],
+    "notFoundUrls": [],
+    "failedRequests": [],
+    "screenshot": {
+      "path": "d:\\Desktop\\trae\\Nanchang\\home-final.png",
+      "saved": true
+    }
+  },
+  "special81": {
+    "hero": {
+      "title": "打响武装反抗的第一枪",
+      "heroBgInline": "background-image: url(\"/images/history/八一南昌起义.jpg\"); translate: none; rotate: none; scale: none; transform: translate(0%, 2.5%) translate3d(0px, 0px, 0px);",
+      "heroBgComputed": "url(\"http://localhost:5175/images/history/%E5%85%AB%E4%B8%80%E5%8D%97%E6%98%8C%E8%B5%B7%E4%B9%89.jpg\")"
+    },
+    "sections": [
+      {
+        "id": "background",
+        "no": "01",
+        "title": "历史背景：风云变幻",
+        "hasGrid": true,
+        "layoutClass": "ch-grid ch-text-left",
+        "domOrder": [
+          "text",
+          "visual"
+        ],
+        "visualPos": {
+          "textLeft": 170,
+          "visualLeft": 752,
+          "visualIsRight": true
+        },
+        "isFull": false
+      },
+      {
+        "id": "preparation",
+        "no": "02",
+        "title": "秘密准备：大旅社风云",
+        "hasGrid": true,
+        "layoutClass": "ch-grid ch-img-left",
+        "domOrder": [
+          "visual",
+          "text"
+        ],
+        "visualPos": {
+          "textLeft": 752,
+          "visualLeft": 170,
+          "visualIsRight": false
+        },
+        "isFull": false
+      },
+      {
+        "id": "process",
+        "no": "03",
+        "title": "凌晨枪声：激战南昌城",
+        "hasGrid": true,
+        "layoutClass": "ch-grid ch-text-left",
+        "domOrder": [
+          "text",
+          "visual"
+        ],
+        "visualPos": {
+          "textLeft": 170,
+          "visualLeft": 752,
+          "visualIsRight": true
+        },
+        "isFull": false
+      },
+      {
+        "id": "significance",
+        "no": "04",
+        "title": "深远意义：建军的开端",
+        "hasGrid": true,
+        "layoutClass": "ch-grid ch-img-left",
+        "domOrder": [
+          "visual",
+          "text"
+        ],
+        "visualPos": {
+          "textLeft": 752,
+          "visualLeft": 170,
+          "visualIsRight": false
+        },
+        "isFull": false
+      },
+      {
+        "id": "archives",
+        "no": "05",
+        "title": "原始文献：历史的见证",
+        "hasGrid": true,
+        "layoutClass": "ch-grid ch-text-left",
+        "domOrder": [
+          "text",
+          "visual"
+        ],
+        "visualPos": {
+          "textLeft": 170,
+          "visualLeft": 752,
+          "visualIsRight": true
+        },
+        "isFull": false
+      },
+      {
+        "id": "model",
+        "no": "06",
+        "title": "数字模型：还原历史场景",
+        "hasGrid": true,
+        "layoutClass": "ch-grid ch-img-left",
+        "domOrder": [
+          "visual",
+          "text"
+        ],
+        "visualPos": {
+          "textLeft": 752,
+          "visualLeft": 170,
+          "visualIsRight": false
+        },
+        "isFull": false
+      },
+      {
+        "id": "vr",
+        "no": "07",
+        "title": "VR全景：身临其境红色景点",
+        "hasGrid": false,
+        "layoutClass": null,
+        "domOrder": null,
+        "visualPos": null,
+        "isFull": true
+      }
+    ],
+    "sectionCount": 7,
+    "hl": {
+      "count": 25,
+      "sample": "1927年4月12日",
+      "background": "rgba(0, 0, 0, 0) linear-gradient(rgba(0, 0, 0, 0) 55%, rgb(254, 243, 199) 55%) repeat scroll 0% 0% / auto padding-box border-box",
+      "backgroundImage": "linear-gradient(rgba(0, 0, 0, 0) 55%, rgb(254, 243, 199) 55%)",
+      "color": "rgb(185, 28, 28)"
+    },
+    "textReadability": {
+      "bodyFontSize": "15.5px",
+      "bodyColor": "rgb(51, 51, 51)",
+      "bodyLineHeight": "31px",
+      "titleFontSize": "30px",
+      "titleColor": "rgb(26, 26, 26)",
+      "titleFontWeight": "800"
+    },
+    "nav": {
+      "exists": true,
+      "position": "sticky",
+      "top": "64px",
+      "zIndex": "40",
+      "btnCount": 7,
+      "btnTexts": [
+        "起义背景",
+        "秘密准备",
+        "凌晨枪声",
+        "深远意义",
+        "原始文献",
+        "模型展示",
+        "VR体验"
+      ],
+      "activeBtn": "起义背景"
+    },
+    "activeAfterScrollToProcess": "凌晨枪声",
+    "leaders": {
+      "exists": true,
+      "backgroundColor": "rgb(26, 20, 16)",
+      "background": "rgb(26, 20, 16) none repeat scroll 0% 0% / auto padding-box border-box",
+      "count": 5,
+      "items": [
+        {
+          "name": "周恩来",
+          "role": "前敌委员会书记",
+          "imgSrc": "http://localhost:8080/images/role/%E5%91%A8%E6%81%A9%E6%9D%A5.jpg",
+          "imgComplete": true,
+          "imgNaturalW": 163
+        },
+        {
+          "name": "贺龙",
+          "role": "起义军总指挥",
+          "imgSrc": "http://localhost:8080/images/role/%E8%B4%BA%E9%BE%99.jpg",
+          "imgComplete": true,
+          "imgNaturalW": 284
+        },
+        {
+          "name": "叶挺",
+          "role": "前敌总指挥",
+          "imgSrc": "http://localhost:8080/images/role/%E5%8F%B6%E6%8C%BA.jpg",
+          "imgComplete": true,
+          "imgNaturalW": 336
+        },
+        {
+          "name": "朱德",
+          "role": "第九军副军长",
+          "imgSrc": "http://localhost:8080/images/role/%E6%9C%B1%E5%BE%B7.jpg",
+          "imgComplete": true,
+          "imgNaturalW": 255
+        },
+        {
+          "name": "刘伯承",
+          "role": "参谋团参谋长",
+          "imgSrc": "http://localhost:8080/images/role/%E5%88%98%E4%BC%AF%E6%89%BF.jpg",
+          "imgComplete": true,
+          "imgNaturalW": 305
+        }
+      ]
+    },
+    "iframes": [
+      {
+        "src": "http://player.bilibili.com/player.html?isOutside=true&aid=297880008&bvid=BV1pF41137Dk&cid=567457654&p=1",
+        "width": 518,
+        "height": 291.375,
+        "isBilibili": true,
+        "isVR": false
+      },
+      {
+        "src": "https://www.720yun.com/t/44vkt7fhr7m?scene_id=73584678",
+        "width": 918,
+        "height": 517.5,
+        "isBilibili": false,
+        "isVR": true
+      }
+    ],
+    "bodyBg": {
+      "bodyBg": "rgb(251, 248, 243)",
+      "bodyBgImage": "radial-gradient(circle at 20% 10%, rgba(201, 162, 39, 0.05) 0%, rgba(0, 0, 0, 0) 40%), radial-gradient(circle at 80% 80%, rgba(197, 48, 48, 0.04) 0%, rgba(0, 0, 0, 0) 45%)",
+      "mainBg": "rgba(0, 0, 0, 0)",
+      "chapterBg": "rgb(250, 248, 245)",
+      "chapterAltBg": "rgb(255, 255, 255)",
+      "hasPageBg": false
+    },
+    "consoleErrors": [
+      "Failed to load resource: the server responded with a status of 401 ()",
+      "@bilibili/bili-user-fingerprint(report): report is not found"
+    ],
+    "pageErrors": [],
+    "notFoundUrls": [],
+    "failedRequests": [
+      "401 https://apiv4.720yun.com/member/me"
+    ],
+    "screenshot": {
+      "path": "d:\\Desktop\\trae\\Nanchang\\special81-final.png",
+      "saved": true
+    }
+  }
+}
